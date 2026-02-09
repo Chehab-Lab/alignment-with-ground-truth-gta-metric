@@ -121,7 +121,7 @@ class ClassificationDataset(Dataset):
             if not os.path.exists(path):  os.mkdir(path)
             dataset = getattr(medmnist, dataclass)(split=self.split, download=True, root=path, as_rgb=True, size=224)
         
-        elif self.dataset_name in ["chestmnist", "tissuemnist"]:
+        elif self.dataset_name == "tissuemnist":
             url = f"https://zenodo.org/records/10519652/files/{self.dataset_name}_224.npz?download=1"
             download_using_axel(url, path, f"{self.dataset_name}_224.npz", 10)
             dataclass = INFO[self.dataset_name]['python_class']
@@ -158,12 +158,8 @@ class ClassificationDataset(Dataset):
         
         return dataset
     
-    def is_multilabel(self):
-        return self.dataset_name in ["chestmnist"]
-    
     def num_labels(self):
         labels_map = {
-            "chestmnist": 14,
             "retinamnist": 5,
             "tissuemnist": 8,
             "aircraft": 100,
@@ -221,12 +217,6 @@ class ClassificationDataset(Dataset):
         elif self.dataset_name in ["retinamnist", "tissuemnist"]:
             image, label = item[0], item[1]
             label = int(label)
-        
-        elif self.dataset_name == "chestmnist": # Multilabel Classification
-            image, raw_labels = item[0], item[1]
-            label = torch.zeros(14)
-            for i in raw_labels:
-                label[i] = 1.0
 
         elif self.dataset_name == "eurosat":
             image, label = item[0], item[1]

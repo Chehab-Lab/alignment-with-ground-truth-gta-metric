@@ -1,66 +1,4 @@
 {
-    "transformations": [
-        {
-            "id": "blur",
-            "sigma_min": 2,
-            "sigma_max": 10,
-            "active": true
-        },
-        {
-            "id": "noise",
-            "scale": 30,
-            "per_channel": true,
-            "active": true
-        },
-        {
-            "id": "jigsaw",
-            "nb_rows_min": 2,
-            "nb_rows_max": 5,
-            "nb_cols_min": 2,
-            "nb_cols_max": 5,
-            "max_steps_min": 2,
-            "max_steps_max": 5,
-            "active": true
-        },
-        {
-            "id": "kmeanscolorquantization",
-            "n_colors_min": 4,
-            "n_colors_max": 8,
-            "active": true
-        },
-        {
-            "id": "saltandpepper",
-            "p_min": 0.1,
-            "p_max": 0.3,
-            "per_channel": false,
-            "active": true
-        },
-        {
-            "id": "coarsedropout",
-            "p_min": 0.1,
-            "p_max": 0.3,
-            "size_percent_min": 0.02,
-            "size_percent_max": 0.1,
-            "per_channel": false,
-            "active": true
-        },
-        {
-            "id": "multiplyhue",
-            "hue_min": 0.1,
-            "hue_max": 2,
-            "active": true
-        },
-        {
-            "id": "affine",
-            "scale_min": 0.8,
-            "scale_max": 1.2,
-            "rotate_min": -45,
-            "rotate_max": 45,
-            "shear_min": -16,
-            "shear_max": 16,
-            "active": true
-        }
-    ],
     "datasets": [
         {
             "id": "aircraft",
@@ -100,11 +38,6 @@
         {
             "id": "retinamnist",
             "task": "classification",
-            "active": false
-        },
-        {
-            "id": "chestmnist",
-            "task": "multilabel_classification",
             "active": false
         },
         {
@@ -175,7 +108,7 @@
             "input_size": 224,
             "params": "87.8M",
             "active": true,
-            "output_size": 1024 
+            "output_size": 1024
         },
         {
             "id": "custom/moco-v3-vit-b",
@@ -183,7 +116,7 @@
             "input_size": 224,
             "params": "86.6M",
             "active": true,
-            "output_size": 768 
+            "output_size": 768
         },
         {
             "id": "custom/byol-resnet50",
