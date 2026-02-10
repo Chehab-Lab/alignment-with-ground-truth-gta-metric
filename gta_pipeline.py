@@ -6,7 +6,7 @@ from datasets import get_dataset
 from utils import stratified_sample
 
 def probe(encoder_name, dataset_name, encoder_target_dim,
-          stratified_sample = True, sample_size=500, 
+          stratify_sample = True, sample_size=500, 
           image_size= 224, random_state=42,
           relative_clustering_scales= [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
           chkpt_path="./chkpt", chkpt_name="checkpoint",  verbose=True):
@@ -25,7 +25,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     
     # Take a subset
     if verbose: print(f"Sampling {sample_size} images ...")
-    if stratified_sample:
+    if stratify_sample:
         sample_data = stratified_sample(dataset, sample_size)
     else:
         sample_data = random_sample(dataset, sample_size)
