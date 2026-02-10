@@ -3,7 +3,7 @@ import random, os, json, gc
 from metric import gta_values
 from encoders import get_features, get_encoder
 from datasets import get_dataset
-from utils import stratified_sample
+from utils import stratified_sample, random_sample 
 
 def probe(encoder_name, dataset_name, encoder_target_dim,
           stratify_sample = True, sample_size=500, 

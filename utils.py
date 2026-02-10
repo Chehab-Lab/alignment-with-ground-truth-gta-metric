@@ -1,6 +1,8 @@
 import subprocess
 import os, re, sys
 from tqdm.notebook import tqdm
+import random
+from collections import defaultdict
 
 def download_using_axel(url, output_dir, output_filename, num_connections = 10):
     
@@ -62,8 +64,10 @@ def already_downloaded(output_dir, output_filename):
     else:
         return False
 
-import random
-from collections import defaultdict
+def random_sample(dataset, sample_size):
+    indices = list(range(len(dataset)))
+    random.shuffle(indices)
+    return [dataset[i] for i in indices[:sample_size]]
 
 def stratified_sample(dataset, sample_size):
     class_indices = defaultdict(list)
