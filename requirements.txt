@@ -1,4 +1,3 @@
 transformers
 medmnist
-numpy<2
-imgaug
+numpy
