@@ -70,6 +70,9 @@ def random_sample(dataset, sample_size):
     return [dataset[i] for i in indices[:sample_size]]
 
 def stratified_sample(dataset, sample_size):
+    if len(dataset) <= sample_size:
+        raise ValueError(f"Dataset size ({len(dataset)}) is not greater than sample size ({sample_size})")
+        
     class_indices = defaultdict(list)
     for i, (_, label) in tqdm(enumerate(dataset), total=len(dataset), desc="Indexing classes"):
         class_indices[label].append(i)
@@ -83,8 +86,15 @@ def stratified_sample(dataset, sample_size):
         sampled_indices.extend(
             random.sample(indices, min(n_samples, len(indices)))
         )
+    
+    if len(sampled_indices) < sample_size:
+        all_indices = set(range(len(dataset)))
+        remaining_indices = list(all_indices - set(sampled_indices))
+        # Add random samples from remaining to reach sample_size
+        sampled_indices.extend(random.sample(remaining_indices, sample_size - len(sampled_indices)))
+        
     sampled_indices = random.sample(
         sampled_indices,
-        min(sample_size, len(sampled_indices))
+        sample_size
     )
     return [dataset[i] for i in sampled_indices]
