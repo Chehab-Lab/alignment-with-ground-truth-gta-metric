@@ -76,7 +76,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     # Store the metric in checkpoint format
     if verbose: print("Saving to chekpoint ...")
     config = {
-        'startified_sample': stratified_sample,
+        'stratify_sample': stratify_sample,
         'sample_size': sample_size,
         'encoder_target_dim': encoder_target_dim,
         'image_size': image_size,
