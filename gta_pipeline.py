@@ -8,7 +8,8 @@ from utils import stratified_sample
 def probe(encoder_name, dataset_name, encoder_target_dim,
           stratified_sample = True, sample_size=500, 
           image_size= 224, random_state=42,
-          ks= None, chkpt_path="./chkpt", chkpt_name="checkpoint",  verbose=True):
+          relative_clustering_scales= [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+          chkpt_path="./chkpt", chkpt_name="checkpoint",  verbose=True):
     
     encoder, processor = get_encoder(encoder_name)
     dataset = get_dataset(dataset_name, 'train', processor=None)
@@ -22,7 +23,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     if not os.path.exists(chkpt_path):
         os.mkdir(chkpt_path)
     
-    # Take a random subset
+    # Take a subset
     if verbose: print(f"Sampling {sample_size} images ...")
     if stratified_sample:
         sample_data = stratified_sample(dataset, sample_size)
@@ -65,7 +66,8 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     
     # Compute GTA metric
     if verbose: print("Computing metrics ...")
-    gta_values_dict = gta_values(features, image_labels, ks)
+    clustering_scales = [int(relative_clustering_scale * sample_size) for relative_clustering_scale in relative_clustering_scales]
+    gta_values_dict = gta_values(features, image_labels, clustering_scales)
 
     if verbose: print("Clearing embeddings from memory ...")
     del features
