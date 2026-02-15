@@ -38,7 +38,7 @@
         {
             "id": "retinamnist",
             "task": "classification",
-            "active": false
+            "active": true
         },
         {
             "id": "tissuemnist",
@@ -53,7 +53,7 @@
         {
             "id": "dtd",
             "task": "classification",
-            "active": false
+            "active": true
         },
         {
             "id": "svhn",
