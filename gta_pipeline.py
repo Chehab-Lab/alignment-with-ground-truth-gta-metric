@@ -1,5 +1,5 @@
 import numpy as np
-import random, os, json, gc
+import random, os, json, gc, math
 from metric import gta_values
 from encoders import get_features, get_encoder
 from datasets import get_dataset
@@ -66,7 +66,8 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     
     # Compute GTA metric
     if verbose: print("Computing metrics ...")
-    clustering_scales = [int(relative_clustering_scale * sample_size) for relative_clustering_scale in relative_clustering_scales]
+    to_integer = lambda x: int(x) if float(x).is_integer() else math.ceil(x)
+    clustering_scales = [to_integer(relative_clustering_scale * sample_size) for relative_clustering_scale in relative_clustering_scales]
     gta_values_dict = gta_values(features, image_labels, clustering_scales)
 
     if verbose: print("Clearing embeddings from memory ...")
