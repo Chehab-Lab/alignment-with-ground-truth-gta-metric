@@ -8,7 +8,7 @@
         {
             "id": "flowers102",
             "task": "classification",
-            "active": false
+            "active": true
         },
         {
             "id": "cub2011",
