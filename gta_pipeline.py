@@ -1,6 +1,6 @@
 import numpy as np
 import random, os, json, gc, math
-from metric import gta_values
+from metrics import Metric, gta_kmeans, gta_hierarchical
 from encoders import get_features, get_encoder
 from datasets import get_dataset
 from utils import stratified_sample, random_sample 
@@ -9,6 +9,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
           stratify_sample = True, sample_size=500, 
           image_size= 224, random_state=42,
           relative_clustering_scales= [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+          metric = Metric.HIERARCHICAL,
           chkpt_path="./chkpt", chkpt_name="checkpoint",  verbose=True):
     
     encoder, processor = get_encoder(encoder_name)
@@ -68,7 +69,10 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     if verbose: print("Computing metrics ...")
     to_integer = lambda x: int(x) if float(x).is_integer() else math.ceil(x)
     clustering_scales = [to_integer(relative_clustering_scale * sample_size) for relative_clustering_scale in relative_clustering_scales]
-    gta_values_dict = gta_values(features, image_labels, clustering_scales)
+    if metric == Metric.KMEANS:
+        gta_values_dict = gta_kmeans(features, image_labels, clustering_scales)
+    elif metric == Metric.HIERARCHICAL:
+        gta_values_dict = gta_hierarchical(features, image_labels, clustering_scales)
 
     if verbose: print("Clearing embeddings from memory ...")
     del features
