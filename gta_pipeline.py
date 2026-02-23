@@ -10,6 +10,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
           image_size= 224, random_state=42,
           relative_clustering_scales= [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
           metric = Metric.HIERARCHICAL,
+          label_noise_rate = 0,
           chkpt_path="./chkpt", chkpt_name="checkpoint",  verbose=True):
     
     encoder, processor = get_encoder(encoder_name)
@@ -45,7 +46,16 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     del sample_data
     gc.collect()
 
-    # Get the features of each image and augmentations
+    # Add label noise - for experimental purposes
+    if label_noise_rate > 0:
+        if verbose: print(f"Adding label noise with rate {label_noise_rate} ...")
+        num_samples = len(image_labels)
+        num_noisy_samples = int(num_samples * label_noise_rate)
+        noisy_indices = np.random.choice(num_samples, num_noisy_samples, replace=False)
+        for idx in noisy_indices:
+            image_labels[idx] = np.random.randint(0, len(np.unique(image_labels)))
+
+    # Get the features of each image
     if verbose: print("Getting images embeddings ...")
     features = []
     batch_size = 64  
@@ -86,6 +96,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
         'encoder_target_dim': encoder_target_dim,
         'image_size': image_size,
         'metric': metric.name,
+        'label_noise_rate': label_noise_rate,
         'random_state': random_state,
     }
     
