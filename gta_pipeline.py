@@ -53,7 +53,10 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
         num_noisy_samples = int(num_samples * label_noise_rate)
         noisy_indices = np.random.choice(num_samples, num_noisy_samples, replace=False)
         for idx in noisy_indices:
-            image_labels[idx] = np.random.randint(0, len(np.unique(image_labels)))
+            original_label = image_labels[idx]
+            alternative_labels = list(np.unique(image_labels))
+            alternative_labels.remove(original_label)
+            image_labels[idx] = np.random.choice(alternative_labels)
 
     # Get the features of each image
     if verbose: print("Getting images embeddings ...")
