@@ -12,6 +12,29 @@ import medmnist
 import os, torch, random
 import subprocess
 
+class GPR1200(Dataset):
+    def __init__(self, download=True):
+        url = "https://visual-computing.com/files/GPR1200/GPR1200.zip"
+        root = os.environ.get('DATASET_PATH', 'data')
+        folder_name = os.path.join(root, "GPR1200")
+        
+        if download and not os.path.exists(folder_name):
+            download_and_extract_archive(url, download_root=folder_name, extract_root=folder_name, remove_finished=True)
+            
+        self.image_folder = os.path.join(folder_name, "images")
+        images = os.listdir(self.image_folder)
+        labels = [int(image.split("_")[0]) for image in images]
+        
+        self.data = sorted(tuple(zip(images, labels)), key = lambda x : x[1])
+            
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        image_path = os.path.join(self.image_folder, self.data[index][0])
+        image = Image.open(image_path).convert("RGB").resize((224 , 224))
+        label = self.data[index][1]
+        return image, label
 
 class CUB2011Dataset(Dataset):
     """Custom CUB-200-2011 dataset"""
@@ -56,6 +79,38 @@ class CUB2011Dataset(Dataset):
         img_path = os.path.join(self.images_dir, self.data.iloc[idx]['filepath'])
         image = Image.open(img_path).convert('RGB')
         label = self.data.iloc[idx]['target'] - 1  # Convert to 0-indexed
+        return image, label
+
+class RetrievalDataset(Dataset):
+    def __init__(self, dataset_name, processor):
+        self.dataset_name = dataset_name
+        self.processor = processor
+        self.data = self.__download_dataset__()
+    
+    def __download_dataset__(self):
+        rootpath = os.environ.get('DATASET_PATH', 'data')
+        path = os.path.join(rootpath, self.dataset_name)
+        if self.dataset_name == "gpr1200":
+            dataset = GPR1200(self.processor, download=True)
+        return dataset
+
+    def num_labels(self):
+        labels_map = {
+            "gpr1200": 1200,
+        }
+        if self.dataset_name in labels_map:
+            return labels_map[self.dataset_name]
+        else:
+            raise Exception(f"Dataset {self.dataset_name} is not supported!")
+        
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, idx):
+        image, label = self.data[idx]
+        if self.processor:
+            image = self.processor(images=image, return_tensors="pt")
+            image = image['pixel_values'].squeeze()
         return image, label
 
 class ClassificationDataset(Dataset):
@@ -144,6 +199,15 @@ class ClassificationDataset(Dataset):
             dataset = ImageFolder(os.path.join(path, "dtd", "images"))
             dataset = self._get_split_train_test_val(dataset)
             tar_ref.close()
+
+        elif self.dataset_name == "gpr1200":
+            dataset = GPR1200(self.processor, download=True)
+            if self.split in ["train", "val"]:
+                dataset = self._get_split_train_val(dataset)
+            elif self.split == "test":
+                dataset = self._get_split_test(dataset)
+            else:
+                raise ValueError(f"Invalid split: {self.split}")
         
         elif self.dataset_name == "svhn":
             if self.split in ["train", "val"]:
@@ -153,6 +217,7 @@ class ClassificationDataset(Dataset):
                 dataset = SVHN(root=path, split="test", download=True)
             else:
                 raise ValueError(f"Invalid split: {self.split}")
+        
         else:
             raise Exception(f"Dataset {self.dataset_name} is not supported!")
         
@@ -236,8 +301,11 @@ class ClassificationDataset(Dataset):
             
         return image, label
     
-def get_dataset(dataset_name, split, processor):
-    return ClassificationDataset(dataset_name, split, processor)
+def get_dataset(dataset_name, split="train", processor=None):
+    if dataset_name in ["gpr1200"]:
+        return RetrievalDataset(dataset_name, processor)
+    else:
+        return ClassificationDataset(dataset_name, split, processor)
 
 def _mock_processor(images, return_tensors):
     images = ToTensor()(images)

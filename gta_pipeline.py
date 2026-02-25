@@ -14,7 +14,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
           chkpt_path="./chkpt", chkpt_name="checkpoint",  verbose=True):
     
     encoder, processor = get_encoder(encoder_name)
-    dataset = get_dataset(dataset_name, 'train', processor=None)
+    dataset = get_dataset(dataset_name)
 
     # Set random seed
     random.seed(random_state)
