@@ -87,6 +87,9 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
     elif metric == Metric.HIERARCHICAL:
         gta_values_dict = gta_hierarchical(features, image_labels, clustering_scales)
 
+    gta_values = gta_values_dict["gta_values"]
+    label_entropy = gta_values_dict["Label Entropy"]
+
     if verbose: print("Clearing embeddings from memory ...")
     del features
     gc.collect()
@@ -106,7 +109,8 @@ def probe(encoder_name, dataset_name, encoder_target_dim,
         'encoder': encoder_name,
         'dataset': dataset_name,
         'config': config,
-        'gta_values': gta_values_dict,
+        'gta_values': gta_values,
+        'label_entropy': label_entropy,
     }
 
     # Write to checkpoint

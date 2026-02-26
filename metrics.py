@@ -59,7 +59,7 @@ def gta_kmeans(embeddings, labels, ks):
     del Y
     gc.collect()
 
-    return alignments
+    return {"gta_values": alignments, "Label Entropy": H_Y}
 
 
 def gta_hierarchical(embeddings, labels, ks):
@@ -106,4 +106,4 @@ def gta_hierarchical(embeddings, labels, ks):
     del Z
     gc.collect()
 
-    return alignments
+    return {"gta_values": alignments, "Label Entropy": H_Y}
