@@ -91,7 +91,7 @@ class RetrievalDataset(Dataset):
         rootpath = os.environ.get('DATASET_PATH', 'data')
         path = os.path.join(rootpath, self.dataset_name)
         if self.dataset_name == "gpr1200":
-            dataset = GPR1200(self.processor, download=True)
+            dataset = GPR1200(download=True)
         return dataset
 
     def num_labels(self):
