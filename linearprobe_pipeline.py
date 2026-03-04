@@ -7,14 +7,15 @@ from time import time
 from tqdm.notebook import tqdm
 import numpy as np
 
-def save_checkpoint(path, classifier, optimizer, epoch, history, hyperparams, early_stopped, weights_only=False):
+def save_checkpoint(path, classifier, optimizer, epoch, history, hyperparams, early_stopped, feature_drop_rate, weights_only=False):
     checkpoint = {
         'classifier_state': classifier.state_dict(),
         'optimizer_state': optimizer.state_dict(),
         'epoch': epoch,
         'history': history,
         'hyperparams': hyperparams,
-        'early_stopped': early_stopped
+        'early_stopped': early_stopped,
+        'feature_drop_rate': feature_drop_rate
     }
     torch.save(checkpoint, path)
 
@@ -32,6 +33,7 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
           early_stopping_based_on_test=True,
           random_state=42, chkpt_path="./chkpt",
           test_every_x_steps=1, validate=False,
+          feature_drop_rate= 0,
           verbose=True):
     
     # Set random seed for reproducibility
@@ -104,6 +106,8 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
             labels = labels.to(device)
             with torch.no_grad():
                 features = get_features(encoder, inputs, encoder_target_dim, device=device)
+                if feature_drop_rate > 0:
+                    features = F.dropout(features, p=feature_drop_rate)
             outputs = classifier(features)
             loss = criterion(outputs, labels)
             optimizer.zero_grad()
@@ -126,7 +130,7 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
                 inputs, labels = batch
                 inputs = inputs.to(device)
                 labels = labels.to(device)  
-                
+    
                 with torch.no_grad():
                     features = get_features(encoder, inputs, encoder_target_dim, device=device)
                     outputs = classifier(features)
