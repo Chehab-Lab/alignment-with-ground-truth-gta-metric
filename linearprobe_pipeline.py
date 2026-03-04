@@ -164,7 +164,7 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
                         "test_loss": None,
                         "test_accuracy": None
                     })
-                    save_checkpoint(chkpt_filepath, classifier, optimizer, epoch + 1, history, hyperparams, early_stopped=True)
+                    save_checkpoint(chkpt_filepath, classifier, optimizer, epoch + 1, history, hyperparams, feature_drop_rate, early_stopped=True)
                     break
         else:
             val_loss = None
@@ -213,7 +213,7 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
                         "test_loss": test_loss,
                         "test_accuracy": test_acc
                     })
-                    save_checkpoint(chkpt_filepath, classifier, optimizer, epoch + 1, history, hyperparams, early_stopped=True)
+                    save_checkpoint(chkpt_filepath, classifier, optimizer, epoch + 1, history, hyperparams, feature_drop_rate, early_stopped=True)
                     break
         else:
             test_loss = None
@@ -229,4 +229,4 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
             "test_accuracy": test_acc
         })
 
-        save_checkpoint(chkpt_filepath, classifier, optimizer, epoch + 1, history, hyperparams, early_stopped=False)
+        save_checkpoint(chkpt_filepath, classifier, optimizer, epoch + 1, history, hyperparams, feature_drop_rate, early_stopped=False)
