@@ -2,6 +2,7 @@ from encoders import get_encoder, get_features
 from datasets import get_dataset
 from torch.utils.data.dataloader import DataLoader
 import torch 
+import torch.nn.functional as F
 import os
 from time import time
 from tqdm.notebook import tqdm
