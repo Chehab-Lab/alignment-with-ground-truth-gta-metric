@@ -90,10 +90,7 @@ def probe(encoder_name, dataset_name, batch_size= 64, n_epochs= 20,
 
     # Define criterion
     if verbose: print("Defining criterion ...")
-    if train_dataset.is_multilabel():
-        criterion = torch.nn.BCEWithLogitsLoss()
-    else:
-        criterion = torch.nn.CrossEntropyLoss()
+    criterion = torch.nn.CrossEntropyLoss()
 
     if verbose: print("Starting training ...")
     for epoch in range(start_epoch, n_epochs):
