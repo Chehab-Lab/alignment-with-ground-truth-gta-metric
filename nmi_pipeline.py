@@ -81,6 +81,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim, k,
         'sample_size': sample_size,
         'encoder_target_dim': encoder_target_dim,
         'metric': metric.name,
+        "k": k,
         'random_state': random_state,
     }
     
