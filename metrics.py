@@ -5,10 +5,40 @@ import pdb, os
 from scipy.stats import entropy
 import gc
 from scipy.cluster.hierarchy import linkage, cut_tree
+from sklearn.metrics import normalized_mutual_info_score
 
 class Metric(Enum):
     KMEANS = "kmeans"
     HIERARCHICAL = "hierarchical"
+    NMI = "nmi"
+
+def nmi(embeddings, labels, k):
+
+    labels = np.asarray(labels)
+    embeddings = np.asarray(embeddings)
+
+    X = np.asarray(embeddings)
+    Y = np.asarray(labels)
+    N = len(Y)
+
+    del embeddings
+    gc.collect()
+
+    kmeans = faiss.Kmeans(
+        d=X.shape[1],
+        k=k,
+        niter=20,
+        seed=42,
+        verbose=False,
+    )
+
+    kmeans.train(X)
+
+    cluster_ids = kmeans.index.search(X, 1)[1].flatten()
+
+    nmi = normalized_mutual_info_score(Y, cluster_ids)
+
+    return {"NMI": nmi}
 
 def gta_kmeans(embeddings, labels, ks):
     
