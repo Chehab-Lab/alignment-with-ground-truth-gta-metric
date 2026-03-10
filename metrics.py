@@ -38,7 +38,7 @@ def nmi(embeddings, labels, k):
 
     nmi = normalized_mutual_info_score(Y, cluster_ids)
 
-    return {"NMI": nmi}
+    return {"nmi": nmi}
 
 def gta_kmeans(embeddings, labels, ks):
     
