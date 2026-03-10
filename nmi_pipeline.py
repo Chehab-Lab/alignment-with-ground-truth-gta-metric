@@ -70,8 +70,6 @@ def probe(encoder_name, dataset_name, encoder_target_dim, k,
     if metric == Metric.NMI:
         nmi_dict = nmi(features, image_labels, k)
 
-    nmi = nmi_dict["nmi"]
-
     if verbose: print("Clearing embeddings from memory ...")
     del features
     gc.collect()
@@ -90,7 +88,7 @@ def probe(encoder_name, dataset_name, encoder_target_dim, k,
         'encoder': encoder_name,
         'dataset': dataset_name,
         'config': config,
-        'nmi': nmi,
+        'nmi': nmi_dict["nmi"],
     }
 
     # Write to checkpoint
