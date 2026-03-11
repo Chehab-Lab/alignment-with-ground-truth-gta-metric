@@ -80,9 +80,8 @@ def evaluate_retrieval(encoder_name: str,
 
     embeddings, labels = _get_embeddings(encoder, dataset, img_processor, target_dim, device)
 
-    if verbose: print("\n Evaluating embeddings....")
 
-    if verbose: print("\n Computing mAP@k....")
+    if verbose: print("\nComputing mAP@k....")
 
     mAP_results = []
     for k in k_list:
